@@ -59,7 +59,7 @@ def Settings():
         search = False
     if search:
         try:
-            log_path = Path(    argv[argv.index(search) + 1]    ).resolve()
+            log_path = Path(getcwd()).joinpath(Path(    argv[argv.index(search) + 1]    )).resolve()
         except IndexError:
             print(r_error("Logfile was specified but no path was provided!"))
             errored = True
