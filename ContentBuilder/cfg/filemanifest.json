@@ -1,0 +1,30 @@
+{
+    "workingdir": "MyMod",
+    "exportdir": "deploy/Build",
+    "export": [
+        {
+            "path_relative": "game/",
+            "path": "game/mymod",
+            "export_all": true,
+
+            "blacklist": {
+                "files": [
+                    "lights.rad",
+                    "README.md"
+                ],
+                "folders": [
+                    ".git"
+                ],
+                "filetypes": [
+                    ".vmx"
+                ]
+            },
+            "whitelist": {
+                "files": [
+                    "README.md"
+                ]
+            }
+        }
+    ]
+
+}
