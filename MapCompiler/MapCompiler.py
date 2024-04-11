@@ -5,7 +5,8 @@ from os import getcwd
 from pathlib import Path
 import json as js
 import subprocess
-from sys import argv, exit
+from sys import argv
+from sys import exit as exit_final
 
 # Globals
 config_path = None
@@ -41,6 +42,10 @@ def Settings():
         ASK = True
     # END
 
+def exit():
+    """Pause the program and then exit"""
+    input("Press any key to exit the program.")
+    exit_final()
 
 def print_info(message):
     print(Style.RESET_ALL + Fore.LIGHTBLACK_EX + f"[INFO] {message}" + Style.RESET_ALL)
@@ -187,6 +192,10 @@ def ResolvePathVar_internal(arg: str, custom_vars = {}):
 def RequestInstallDir(AppID:int, provider: Path):
     process = subprocess.Popen([str(provider), str(AppID)], stdout=subprocess.PIPE, universal_newlines=True)
     path_ = process.stdout.readline()
+    code = process.wait()
+    if code != 0:
+        print_error(f"There was an error while requesting path for AppID: {AppID} | RC: {code}")
+        exit()
     return Path(path_).resolve()
     
 
