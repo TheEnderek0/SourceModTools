@@ -1,0 +1,57 @@
+"GameInfo"
+{
+	//Special gameinfo for export script
+	game 		"Puzzlemaker P2CE Export"
+	GameData	"p2ce.fgd"
+
+	mount
+	{
+		620
+		{
+			"required" "1"
+            
+            "bee2"
+			{
+				"vpk" "pak01"
+			}
+
+			"update"
+			{
+				"vpk" "pak01"
+			}
+
+			"portal2_dlc2"
+			{
+				"vpk" "pak01"
+			}
+
+			"portal2_dlc1"
+			{
+				"vpk" "pak01"
+			}
+
+			"portal2"
+			{
+				"vpk" "pak01"
+			}
+		}
+	}
+
+	FileSystem
+	{
+		SteamAppId				440000
+
+		SearchPaths
+		{
+			game+mod+default_write_path				PSC/game/PSC
+			Game				p2ce
+			Game				PSC/game/assets_csgo
+
+			Game				hammer
+			gamebin				p2ce/bin
+
+			// Platform + game required for hammer
+			Platform+game		platform
+		}
+	}
+}

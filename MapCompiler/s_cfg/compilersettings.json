@@ -1,0 +1,101 @@
+{
+    "Moddir": "Portal 2 Community Edition",
+    "PathProvider": "<moddir>/p2ce/custom/puzzlemaker/s_cfg/SteamPathProvider.exe",
+    "ExamplePathsVDF": "<moddir>/p2ce/custom/puzzlemaker/s_cfg/srctools_paths_default.txt",
+    "PathsVDFWrite": "<moddir>/p2ce/custom/puzzlemaker/srctools_paths.vdf",
+    "SearchForPaths": [
+        {
+            "Reference": "Portal2",
+            "InPathsVDF": "portal2",
+            "AppID": 620
+        },
+        {
+            "Reference": "P2CE",
+            "AppID": 440000
+        }
+    ],
+    "PromptMap": {
+        "SearchIn": "<Portal2>/sdk_content/maps",
+        "Filetype": ".vmf"
+    },
+    "Compile": [
+        {
+            "Name": "Precompile",
+            "CWD": "<Portal2>/bin",
+            "Call": "<cwd>/vbsp.exe",
+            "Arguments": [
+                "-game", "./../portal2",
+                "-force_peti", 
+                "<map>{posix}"
+            ],
+            "ChangeMapPath": "<Portal2>/sdk_content/maps/styled/<mapfilename>"
+        },
+        {
+            "Name": "CopyToP2CE",
+            "Call": "CopyFile",
+                "Source": "<map>.vmf",
+                "Destination": "<moddir>/p2ce/custom/puzzlemaker/mapsrc/<mapfilename>.vmf",
+            "ChangeMapPath": "<moddir>/p2ce/custom/puzzlemaker/mapsrc/<mapfilename>"
+        },
+        {
+            "Name": "VBSP",
+            "CWD": "<P2CE>",
+            "Call": "<cwd>/bin/win64/vbsp.exe",
+            "Arguments": [
+                "-game", "p2ce/custom/puzzlemaker",
+                "-instancepath", "<Portal2>/sdk_content/maps/",
+                "<map>.vmf"
+            ]
+        },
+        {
+            "Name": "Postcompiler",
+            "CWD": "<P2CE>",
+            "Call": "<cwd>/bin/win64/postcompiler/postcompiler.exe",
+            "Arguments": [
+                "<map>.bsp"
+            ]
+        },
+        {
+            "Name": "VVIS",
+            "CWD": "<P2CE>",
+            "Call": "<cwd>/bin/win64/vvis.exe",
+            "Arguments": [
+                "-game", "p2ce/custom/puzzlemaker",
+                "<map>.bsp"
+            ]
+        },
+        {
+            "Name": "VRAD",
+            "CWD": "<P2CE>",
+            "Call": "<cwd>/bin/win64/vrad.exe",
+            "Arguments": [
+                "-game", "p2ce/custom/puzzlemaker",
+                "-StaticPropLighting", 
+                "-hdr",
+                "-StaticPropPolys",
+                "-lights", "<Portal2>/portal2/lights.rad",
+                "<map>.bsp"
+            ]
+        },
+        {
+            "Name": "CopyFinal",
+            "Call": "CopyFile",
+                "Source": "<map>.bsp",
+                "Destination": "<moddir>/p2ce/maps/puzzlemaker/<mapfilename>.bsp",
+            "ChangeMapPath": "puzzlemaker/<mapfilename>"
+        },
+        {
+            "Name": "LaunchGame",
+            "CWD": "<P2CE>",
+            "Call": "<P2CE>/bin/win64/chaos.exe",
+            "Arguments": [
+                "-game", "p2ce",
+                "-novid",
+                "-multirun",
+                "+mat_grain_enable", "0",
+                "+map", "<map>{posix}"
+            ],
+            "IgnoreLog": true
+        }
+    ]
+}
