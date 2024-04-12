@@ -79,13 +79,20 @@
 	// * "nopack" "folder/" prohibits files in this path from being packed, you'll need to use one of the others also to add the path.
 	"searchpaths"
 		{
-		"nopack" "../../../PSC/game/PSC/"
-		"nopack" "../../../p2ce/"
+		"nopack" "../../"
+		"nopack" "|portal2|/portal2_dlc2/"
+		"nopack" "|portal2|/portal2_dlc2/pak01_dir.vpk"
+		"nopack" "|portal2|/portal2_dlc1/"
+		"nopack" "|portal2|/portal2_dlc1/pak01_dir.vpk"
 		"nopack" "|portal2|/portal2/"
+		"nopack" "|portal2|/portal2/pak01_dir.vpk"
 		"path" "|portal2|/bee2"
 		"path" "|portal2|/portal2_dlc2/"
+		"path" "|portal2|/portal2_dlc2/pak01_dir.vpk"
 		"path" "|portal2|/portal2_dlc1/"
+		"path" "|portal2|/portal2_dlc1/pak01_dir.vpk"
 		"path" "|portal2|/portal2/"
+		"path" "|portal2|/portal2/pak01_dir.vpk"
 		}
 
 
