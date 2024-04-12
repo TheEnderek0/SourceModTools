@@ -522,6 +522,7 @@ def main():
             input("Press anything to continue...")
     
     print_success("Done!")
+    exit()
 
     
 
