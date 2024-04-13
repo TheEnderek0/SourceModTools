@@ -1,0 +1,10 @@
+{
+    "Moddir": "MyMod",
+    "PrimaryFolder": "game/mymod",
+    "SecondaryFolder": "game/portal2",
+    "CheckDirectories": [
+        "materials",
+        "models",
+        "sound"
+    ]
+}
