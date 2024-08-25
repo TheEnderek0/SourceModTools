@@ -1,2 +1,2 @@
-pyinstaller -F --icon=..\other\Tools.ico MapCompiler.py
+pyinstaller MapCompiler.spec
 pause
