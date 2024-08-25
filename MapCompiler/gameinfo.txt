@@ -43,9 +43,9 @@
 
 		SearchPaths
 		{
-			game+mod+default_write_path				PSC/game/PSC
-			Game				p2ce
-			Game				PSC/game/assets_csgo
+			Game				"p2ce/custom/*"
+			game+mod+default_write_path	p2ce
+
 
 			Game				hammer
 			gamebin				p2ce/bin
