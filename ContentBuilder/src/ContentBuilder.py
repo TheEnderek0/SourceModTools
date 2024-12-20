@@ -6,6 +6,7 @@ from shutil import copy2 as CopyFile
 from os import getcwd
 from pathlib import Path
 import json as js # Troll :O
+from srctools import steam
 
 
 PROGRESSPRINT = False
@@ -116,11 +117,20 @@ def LoadManifest():
     with open(fm_path, "r") as fm_file:
         FM = js.loads(fm_file.read())
 
-def DetermineFullCWD(name):
+def DetermineFullCWD(name: str):
     global w_dir
     cwd = Path(getcwd())
 
-    parentlist = list(cwd.parents)
+    if name.startswith("<") and (endindx := name.find(">")) != -1:
+        name = name[1:endindx]
+
+        path = steam.find_app(int(name))
+        w_dir = path.path
+        print(w_dir)
+        return
+
+
+    parentlist = list(cwd.parents) + [cwd]
     for p in parentlist:
         if str(p.stem) == name:
             w_dir = p
