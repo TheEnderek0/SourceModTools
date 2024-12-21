@@ -12,6 +12,7 @@ p_folder: Path = None
 s_folder: Path = None
 dirs: list = None
 moddir: Path = None
+delete_mode: bool = False
 
 
 def print_info(message):
@@ -49,6 +50,10 @@ def Settings():
             exit()
     else:
         cfg_path = Path("./settings.json")
+    
+    global delete_mode
+
+    delete_mode = "-d" in argv
 
 
 
@@ -145,6 +150,17 @@ def CheckDuplicates(folder):
     for fl in p_filelist: # We'll always iterate by the primary pathlist files
         if fl in s_filelist:
             print_info(f"[Duplicate] {fl}")
+
+    if delete_mode:
+        print_warning("Are you sure you want to delete these files?")
+        input("Press Ctrl+C or close the window to cancel, otherwise, proceeding to delete.")
+        for fl in p_filelist:
+            if fl in s_filelist:
+                delpath: Path = s_path / fl
+                print(f"[Deleting] {delpath}")
+                delpath.unlink(missing_ok=True)
+
+
     
 
 def main():
