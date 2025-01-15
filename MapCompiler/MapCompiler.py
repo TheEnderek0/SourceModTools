@@ -7,6 +7,8 @@ import json as js
 import subprocess
 from sys import argv
 from sys import exit as exit_final
+from srctools.steam import find_app
+
 
 # Globals
 config_path = None
@@ -190,13 +192,11 @@ def ResolvePathVar_internal(arg: str, custom_vars = {}):
 
 
 def RequestInstallDir(AppID:int, provider: Path):
-    process = subprocess.Popen([str(provider), str(AppID)], stdout=subprocess.PIPE, universal_newlines=True)
-    path_ = process.stdout.readline()
-    code = process.wait()
-    if code != 0:
-        print_error(f"There was an error while requesting path for AppID: {AppID} | RC: {code}")
+    try:
+        return find_app(app_id=AppID).path
+    except KeyError:
+        print_error(f"There was an error while requesting path for AppID: {AppID}, check if the app is installed!")
         exit()
-    return Path(path_).resolve()
     
 
 def MakePathsVDF(paths: dict):
