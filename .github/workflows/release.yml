@@ -32,7 +32,7 @@ jobs:
       - name: Pack files
         uses: TheDoctor0/zip-release@0.7.6
         with:
-          filename: build.zip
+          filename: Release.zip
           path: ./build/
 
       - run: git fetch --tags origin
@@ -54,6 +54,6 @@ jobs:
         if: ${{ github.event.inputs.version == '' }}
         with:
           tag_name: ${{ steps.next.outputs.version }}
-          files: build.zip
+          files: Release.zip
           fail_on_unmatched_files: true
         
