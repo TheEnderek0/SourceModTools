@@ -1,0 +1,55 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+      
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    name: Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'requirements.txt'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+  
+      - name: Build executables
+        run: .\build.bat
+
+# Partial credit goes to Strata Source for the action code below
+      - name: Pack files
+        uses: TheDoctor0/zip-release@0.7.6
+        with:
+          filename: build.zip
+          path: ./build/
+          
+      - name: Get previous tag
+        id: previoustag
+        uses: 'WyriHaximus/github-action-get-previous-tag@v1'
+
+      - name: Next Monotonic Release version
+        id: next
+        uses: WyriHaximus/github-action-next-release-version@08a7476c98e8095fad1cce0e2344c7892e17d111
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ github.event.inputs.version == '' }}
+        with:
+          tag_name: ${{ steps.next.outputs.version }}
+          files: build.zip
+          fail_on_unmatched_files: true
+        
