@@ -1,2 +1,0 @@
-pyinstaller MapCompiler.spec
-pause
