@@ -33,7 +33,7 @@ jobs:
         uses: TheDoctor0/zip-release@0.7.6
         with:
           filename: Release.zip
-          path: ./build/
+          path: ./dist/
 
       - run: git fetch --tags origin
       
