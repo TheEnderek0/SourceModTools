@@ -1,0 +1,3 @@
+git+https://github.com/Project-Collapse-Studios/srctools.git
+colorama
+pyinstaller
