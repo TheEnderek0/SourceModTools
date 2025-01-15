@@ -34,7 +34,9 @@ jobs:
         with:
           filename: build.zip
           path: ./build/
-          
+
+      - run: git fetch --tags origin
+      
       - name: Get previous tag
         id: previoustag
         uses: 'WyriHaximus/github-action-get-previous-tag@v1'
