@@ -191,7 +191,7 @@ def ResolvePathVar_internal(arg: str, custom_vars = {}):
 
 
 
-def RequestInstallDir(AppID:int, provider: Path):
+def RequestInstallDir(AppID:int):
     try:
         return find_app(app_id=AppID).path
     except KeyError:
@@ -248,17 +248,6 @@ def SearchForPaths():
     except:
         return
     
-    try:
-        provider = config["PathProvider"]
-    except:
-        print_error("SearchForPaths requested but no PathProvider is specified!")
-        exit()
-    
-    provider = ResolvePathVar(provider)
-    if not provider.is_file():
-        print_error("PathProvider field is not a valid path!")
-        exit()
-    
     
     vdf_d = {} # Stuff to add to paths vdf later
     vdf_export = False
@@ -280,7 +269,7 @@ def SearchForPaths():
             print_error(f"No AppID was defined for {reference} in SearchForPaths!")
             exit()
 
-        install_path = RequestInstallDir(appid, provider)
+        install_path = RequestInstallDir(appid)
         if reference:
             path_dict[reference] = install_path
         if vdf:
