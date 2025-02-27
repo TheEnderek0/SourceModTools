@@ -2,3 +2,6 @@ dist
 build
 *.exe
 package/
+
+venv/
+#tests/contentbuilder/export/
