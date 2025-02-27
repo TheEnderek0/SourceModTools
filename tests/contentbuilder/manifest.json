@@ -1,0 +1,25 @@
+{
+    "workingdir": "contentbuilder",
+    "exportdir": "export/",
+    "export": [
+        {
+            "path_relative": ".",
+            "path": "to_export/",
+            "export_all": true,
+
+            "blacklist": {
+                "files": [
+                    "lights.rad",
+                    "README.md"
+                ],
+                "folders": [
+                    "forbidden"
+                ],
+                "filetypes": [
+                    ".vmx"
+                ]
+            }
+        }
+    ]
+
+}
