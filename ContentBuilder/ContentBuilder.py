@@ -14,6 +14,7 @@ fm_path = None
 log_path = None
 w_dir = None
 skip_confirm_dialog = False
+wd_override = None
 
 def Settings():
     errored = False
@@ -74,6 +75,33 @@ def Settings():
     if "-s" in argv or "--skipdialog" in argv:
         skip_confirm_dialog = True
     # End
+
+    # CWD
+    global wd_override
+    try:
+        wd_ind = argv.index("-wd") + 1
+        wd_override = Path(argv[wd_ind].strip())
+
+        if not wd_override.is_absolute():
+            wd_override = Path(getcwd().strip()) / wd_override
+
+        print(wd_override.exists())
+
+        #exit()
+        if not wd_override.exists():
+            print_error(f"Specified -wd path does not exist! `{wd_override}`")
+            exit()
+
+    except IndexError:
+        print_error("Error while processing -wd parameter!")
+        exit()
+
+    except ValueError:
+        pass
+        
+        
+
+
     
 
 
@@ -119,7 +147,10 @@ def LoadManifest():
 
 def DetermineFullCWD(name: str):
     global w_dir
-    cwd = Path(getcwd())
+    cwd = wd_override
+
+    if not cwd: 
+        cwd = Path(getcwd())
 
     if name.startswith("<") and (endindx := name.find(">")) != -1:
         name = name[1:endindx]
