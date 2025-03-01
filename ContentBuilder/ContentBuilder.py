@@ -85,7 +85,6 @@ def Settings():
         if not wd_override.is_absolute():
             wd_override = Path(getcwd().strip()) / wd_override
 
-        print(wd_override.exists())
 
         #exit()
         if not wd_override.exists():
@@ -148,6 +147,9 @@ def LoadManifest():
 def DetermineFullCWD(name: str):
     global w_dir
     cwd = wd_override
+
+    if cwd: # Already set the CWD by override
+        return
 
     if not cwd: 
         cwd = Path(getcwd())
