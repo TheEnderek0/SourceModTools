@@ -149,10 +149,12 @@ def DetermineFullCWD(name: str):
     cwd = wd_override
 
     if cwd: # Already set the CWD by override
+        w_dir = cwd
         return
 
-    if not cwd: 
-        cwd = Path(getcwd())
+        
+    cwd = Path(getcwd())
+
 
     if name.startswith("<") and (endindx := name.find(">")) != -1:
         name = name[1:endindx]
