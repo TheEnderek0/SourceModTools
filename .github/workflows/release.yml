@@ -7,9 +7,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  create-release:
+    runs-on: ubuntu-latest
+    name: Create Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - run: git fetch --tags origin
+      
+      - name: Get previous tag
+        id: previoustag
+        uses: 'WyriHaximus/github-action-get-previous-tag@v1'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Next Monotonic Release version
+        id: next
+        uses: WyriHaximus/github-action-next-release-version@08a7476c98e8095fad1cce0e2344c7892e17d111
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ github.event.inputs.version == '' }}
+        with:
+          tag_name: ${{ steps.next.outputs.version }}
+      
+  
+  build-windows:
     runs-on: windows-latest
-    name: Release
+    name: Build-windows
+    needs: create-release
+    if: ${{ always() && !cancelled() && needs.create-release.result == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,7 +62,7 @@ jobs:
       - name: Pack files
         uses: TheDoctor0/zip-release@0.7.6
         with:
-          filename: Release.zip
+          filename: Release-Win64.zip
           path: ./dist/
 
       - run: git fetch --tags origin
@@ -43,17 +73,59 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Next Monotonic Release version
-        id: next
-        uses: WyriHaximus/github-action-next-release-version@08a7476c98e8095fad1cce0e2344c7892e17d111
+      - name: Upload to release
+        uses: softprops/action-gh-release@v1
+        if: ${{ github.event.inputs.version == '' }}
         with:
-          version: ${{ steps.previoustag.outputs.tag }}
+          tag_name: ${{ steps.previoustag.outputs.tag }}
+          files: Release-Win64.zip
+          fail_on_unmatched_files: true
+
+          
+  build-linux:
+    runs-on: ubuntu-latest
+    name: Build Linux
+    needs: create-release
+    if: ${{ always() && !cancelled() && needs.create-release.result == 'success' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'requirements.txt'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install -r requirements.txt
+  
+      - name: Build executables
+        run: ./build_linux.sh
+
+      - name: Pack files
+        uses: TheDoctor0/zip-release@0.7.6
+        with:
+          filename: Release-Linux64.zip
+          path: ./dist/
+
+      - run: git fetch --tags origin
+      
+      - name: Get previous tag
+        id: previoustag
+        uses: 'WyriHaximus/github-action-get-previous-tag@v1'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         if: ${{ github.event.inputs.version == '' }}
         with:
-          tag_name: ${{ steps.next.outputs.version }}
-          files: Release.zip
+          tag_name: ${{ steps.previoustag.outputs.tag }}
+          files: Release-Linux64.zip
           fail_on_unmatched_files: true
+      
+    
         
