@@ -5,3 +5,5 @@ package/
 
 venv/
 #tests/contentbuilder/export/
+
+*.log
