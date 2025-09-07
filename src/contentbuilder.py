@@ -3,13 +3,14 @@ from SMTLib.baseclass import SMTBase
 from pathlib import Path
 from sys import argv
 import argparse
-from os import process_cpu_count, remove
+from os import remove, cpu_count
 from shutil import copy2, rmtree
 from srctools.keyvalues import Keyvalues
 from srctools import conv_bool
 from SMTLib import CASE_SENSITIVE
 from multiprocessing import Pool
 from time import time
+from math import ceil
 
 
 LOG_PATH = Path(argv[0]).parent / "ContentBuilder.log"
@@ -24,7 +25,7 @@ def main():
         "-v", "--verbose",
         action='store_true',
         dest="verbose",
-        help="Specify if the program should print out more information (Not including --progressprint)."
+        help="Specify if the program should print out more information."
     )
 
     parser.add_argument(
@@ -69,7 +70,7 @@ def main():
         action="store",
         dest="threads",
         help="Maximum amount of threads this program can use. Default value is half of available threads.",
-        default=process_cpu_count() / 2
+        default=ceil(cpu_count() / 2)
     )
 
     parser.add_argument(
@@ -92,9 +93,9 @@ def main():
         logger.error(f"Invalid threads argument passed. Expecting  positive integer, got {result.threads}!")
         raise RuntimeError
 
-    if threads > process_cpu_count():
-        logger.warning(f"Threads value passed is too high, only {process_cpu_count()} threads are available! Setting the thread count to maximum available.")
-        threads = process_cpu_count()
+    if threads > cpu_count():
+        logger.warning(f"Threads value passed is too high, only {cpu_count()} threads are available! Setting the thread count to maximum available.")
+        threads = cpu_count()
 
     if result.verbose:
         logger.info(f"Working with {threads} threads.")
@@ -175,7 +176,7 @@ class ContentBuilder(SMTBase):
             block = export_block.find_block(kv_block_name)
             files = self.parse_export_block(block)
 
-            relative_path = self.AbsoluteOrWd(Path(block["path_relative", block["path", ""]]))
+            relative_path = self.AbsoluteOrWd(Path(block["relative path", block["path", ""]]))
 
             self.f_structure |= self.relate_files(files, destination, relative_path, kv_block_name)
         
