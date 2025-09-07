@@ -5,3 +5,6 @@ package/
 
 venv/
 #tests/contentbuilder/export/
+
+*.log
+__pycache__

@@ -1,0 +1,21 @@
+"Test Config" {
+    
+    "Working Directory" {
+        "Find" "Pulpit"
+    }
+
+
+
+    "Export Dir" "test_export/"
+
+    "Export" {
+        "SMT BLOCK" {
+            "Path" "SourceModTools"
+            "Export All" 1
+
+            "Blacklist" {
+                "dir" "src"
+            }
+        }
+    }
+}
