@@ -35,9 +35,13 @@ jobs:
           tag_name: ${{ steps.next.outputs.version }}
       
   
-  build-windows:
-    runs-on: windows-latest
-    name: Build-windows
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: $${{ matrix.os }}
+    name: Build
     needs: create-release
     if: ${{ always() && !cancelled() && needs.create-release.result == 'success' }}
     steps:
@@ -47,7 +51,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12.10'
           cache: 'pip'
           cache-dependency-path: 'requirements.txt'
 
@@ -56,14 +60,18 @@ jobs:
           python -m pip install -r requirements.txt
   
       - name: Build executables
-        run: .\build.bat
+        run: |
+          chmod +x ./build.sh
 
-# Partial credit goes to Strata Source for the action code below
-      - name: Pack files
-        uses: TheDoctor0/zip-release@0.7.6
-        with:
-          filename: Release-Win64.zip
-          path: ./dist/
+          $python_executable=python ./build.sh
+
+        shell: bash
+
+#      - name: Pack files
+#        uses: TheDoctor0/zip-release@0.7.6
+#        with:
+#          filename: Release-Win64.zip
+#          path: ./dist/
 
       - run: git fetch --tags origin
       
@@ -74,58 +82,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload to release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: ${{ github.event.inputs.version == '' }}
         with:
           tag_name: ${{ steps.previoustag.outputs.tag }}
-          files: Release-Win64.zip
+          files: ./dist/*
           fail_on_unmatched_files: true
-
-          
-  build-linux:
-    runs-on: ubuntu-latest
-    name: Build Linux
-    needs: create-release
-    if: ${{ always() && !cancelled() && needs.create-release.result == 'success' }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-
-      - name: Install dependencies
-        run: |
-          python3 -m pip install -r requirements.txt
-  
-      - name: Build executables
-        run: ./build_linux.sh
-
-      - name: Pack files
-        uses: TheDoctor0/zip-release@0.7.6
-        with:
-          filename: Release-Linux64.zip
-          path: ./dist/
-
-      - run: git fetch --tags origin
-      
-      - name: Get previous tag
-        id: previoustag
-        uses: 'WyriHaximus/github-action-get-previous-tag@v1'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        if: ${{ github.event.inputs.version == '' }}
-        with:
-          tag_name: ${{ steps.previoustag.outputs.tag }}
-          files: Release-Linux64.zip
-          fail_on_unmatched_files: true
-      
-    
-        
